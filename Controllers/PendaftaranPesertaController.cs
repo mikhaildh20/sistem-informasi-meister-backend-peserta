@@ -29,5 +29,32 @@ namespace sistem_informasi_produksi_backend.Controllers
             }
             catch { return BadRequest(); }
         }
+
+        [HttpPost]
+        public IActionResult CreateDetailRiwayatPekerjaan([FromBody] dynamic data)
+        {
+            try
+            {
+                JArray records = JArray.Parse(data.ToString()); // Convert dynamic data to JArray
+
+                if (records == null || records.Count == 0)
+                {
+                    return BadRequest(new { message = "No records provided" });
+                }
+
+                foreach (var record in records)
+                {
+                    JObject value = JObject.Parse(record.ToString()); // Convert each record to JObject
+                    dt = lib.CallProcedure("sim_createDetailRiwayatPekerjaan", EncodeData.HtmlEncodeObject(value));
+                }
+
+                return Ok(JsonConvert.SerializeObject(dt));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
     }
 }
