@@ -41,58 +41,35 @@ namespace sistem_informasi_produksi_backend.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(List<IFormFile> files)
+        public async Task<IActionResult> UploadFile(IFormFile file, [FromQuery] string folder = "Uploads")
         {
             try
             {
-                if (files == null || files.Count == 0)
+                if (file == null || file.Length == 0)
                     return BadRequest("Berkas tidak ada/tidak valid.");
 
-                string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
+                // Generate a unique filename
+                string fileName = "FILE_" + Guid.NewGuid() + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + Path.GetExtension(file.FileName);
 
-                string uploadRoot = Path.Combine(hostingEnvironment.WebRootPath, "Uploads");
-                string photoPath = Path.Combine(uploadRoot, "PasPhoto");
-                string sertifikatPath = Path.Combine(uploadRoot, "Sertifikat");
+                // Ensure directory exists inside wwwroot
+                string uploadDirectory = Path.Combine(hostingEnvironment.WebRootPath, folder);
+                if (!Directory.Exists(uploadDirectory))
+                    Directory.CreateDirectory(uploadDirectory);
 
-                // Buat folder jika belum ada
-                if (!Directory.Exists(photoPath)) Directory.CreateDirectory(photoPath);
-                if (!Directory.Exists(sertifikatPath)) Directory.CreateDirectory(sertifikatPath);
+                // Define the file path
+                string filePath = Path.Combine(uploadDirectory, fileName);
 
-                string fotoPeserta = "";
-                List<string> sertifikatFiles = new List<string>();
+                // Save file
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(stream);
 
-                foreach (var file in files)
-                {
-                    string fileExt = Path.GetExtension(file.FileName).ToLower();
-                    string fileName = "FILE_" + Guid.NewGuid() + fileExt;
-                    string savePath = "";
-
-                    if (imageExtensions.Contains(fileExt))
-                    {
-                        savePath = Path.Combine(photoPath, fileName);
-                        fotoPeserta = $"PasPhoto/{fileName}"; // Hanya simpan 1 foto terakhir
-                    }
-                    else
-                    {
-                        savePath = Path.Combine(sertifikatPath, fileName);
-                        sertifikatFiles.Add($"Sertifikat/{fileName}");
-                    }
-
-                    // Simpan file
-                    using var stream = new FileStream(savePath, FileMode.Create);
-                    await file.CopyToAsync(stream);
-                }
-
-                return Ok(JsonConvert.SerializeObject(new
-                {
-                    FotoPeserta = fotoPeserta,
-                    SertifikatPeserta = string.Join(",", sertifikatFiles)
-                }));
+                return Ok(new { Hasil = fileName });
             }
             catch
             {
-                return BadRequest("Terjadi kesalahan saat mengunggah file.");
+                return BadRequest("Terjadi kesalahan saat mengunggah berkas.");
             }
         }
+
     }
 }

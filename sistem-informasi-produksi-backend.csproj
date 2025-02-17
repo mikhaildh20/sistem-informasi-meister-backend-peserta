@@ -23,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Ktp\" />
+    <Folder Include="wwwroot\Ijazah\" />
     <Folder Include="wwwroot\Sertifikat\" />
     <Folder Include="wwwroot\PasPhoto\" />
   </ItemGroup>
