@@ -19,8 +19,6 @@ namespace sistem_informasi_produksi_backend.Controllers
                     return BadRequest("Berkas tidak ada/tidak valid.");
                 }
 
-                /*Console.WriteLine($"File diterima: {file.FileName}, Ukuran: {file.Length} bytes");*/
-
                 string fileName = "FILE_" + Guid.NewGuid() + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + Path.GetExtension(file.FileName);
 
                 string uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder);
@@ -30,8 +28,6 @@ namespace sistem_informasi_produksi_backend.Controllers
                 string filePath = Path.Combine(uploadDirectory, fileName);
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await file.CopyToAsync(stream);
-
-                /*Console.WriteLine($"File berhasil disimpan di: {filePath}");*/
 
                 return Ok(new { Hasil = fileName });
             }
@@ -67,7 +63,7 @@ namespace sistem_informasi_produksi_backend.Controllers
                 }
             }
 
-            return Ok(new { hasil = string.Join(",", fileNames) }); // Return file names as a comma-separated string
+            return Ok(new { hasil = string.Join(",", fileNames) }); 
         }
 
 
