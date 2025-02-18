@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Ktp\" />
     <Folder Include="wwwroot\Ijazah\" />
-    <Folder Include="wwwroot\Sertifikat\" />
+    <Folder Include="wwwroot\Ktp\" />
     <Folder Include="wwwroot\PasPhoto\" />
+    <Folder Include="wwwroot\Sertifikat\" />
   </ItemGroup>
 
 </Project>
