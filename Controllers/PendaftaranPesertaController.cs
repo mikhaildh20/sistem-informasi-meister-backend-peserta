@@ -42,5 +42,17 @@ namespace sistem_informasi_produksi_backend.Controllers
             catch { return BadRequest(); }
         }
 
+        [HttpPost]
+        public IActionResult CreateDetailPekerjaan([FromBody] dynamic data)
+        {
+            try
+            {
+                JObject value = JObject.Parse(data.ToString());
+                dt = lib.CallProcedure("sim_createDetailRiwayatPekerjaan", EncodeData.HtmlEncodeObject(value));
+                return Ok(JsonConvert.SerializeObject(dt));
+            }
+            catch { return BadRequest(); }
+        }
+
     }
 }
